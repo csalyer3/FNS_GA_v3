@@ -102,11 +102,9 @@ class mcnp_file_handler():
         ### todo: write function which pulls flux tally out of mcnp output and returns it in a format required for calculate_representivity
         
         inputfile = open(input_name, 'r')
-        #bins = []
+  
         current_vals= []
         current_unc = []
-        total = []
-        total_unc = []
         i = 0
         for line in inputfile:
             if line == '      energy   \n':
@@ -120,13 +118,13 @@ class mcnp_file_handler():
                     current_vals.append(np.float64(split_l[length-2]))
                     current_unc.append(np.float64(split_l[length-1]))
 
-                    if p == 253:
-                        total.append(split_l[len(split_l)-2])
-                        total_unc.append(split_l[len(split_l)-1])
+                    #if p == 253:
+                        #total.append(split_l[len(split_l)-2])
+                        #total_unc.append(split_l[len(split_l)-1])
                     p = p + 1
                    
-                current_vals.pop(252) #extracting last value ('total flux')
-                current_unc.pop(252)
+                total = current_vals.pop(252) #extracting last value ('total flux')
+                total_unc = current_unc.pop(252)
         #bins.pop(239)
             i = i + 1
         return current_vals, current_unc
@@ -179,7 +177,7 @@ class mcnp_file_handler():
         flux2 = f2.reshape(1,252)
         flux1_unc = flux1 * f1_unc
         flux2_unc = flux2 * f2_unc
-        #print(np.shape(flux1))
+
         numerator = np.dot(flux1,np.transpose(flux2))
         dnumerator_dflux1 = flux2
         dnumerator_dflux2 = flux1
