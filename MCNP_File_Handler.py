@@ -114,7 +114,7 @@ class mcnp_file_handler():
                     split_l = lines.split(' ')
                     length = len(split_l)
                     #bins.append((split_l[length-5]))
-                    print(split_l[length-2])
+                    #print(split_l[length-2])
                     current_vals.append(np.float64(split_l[length-2]))
                     current_unc.append(np.float64(split_l[length-1]))
 
