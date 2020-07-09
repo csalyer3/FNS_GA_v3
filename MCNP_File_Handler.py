@@ -113,19 +113,13 @@ class mcnp_file_handler():
                     lines = inputfile.readline(n)
                     split_l = lines.split(' ')
                     length = len(split_l)
-                    #bins.append((split_l[length-5]))
-                    #print(split_l[length-2])
+             
                     current_vals.append(np.float64(split_l[length-2]))
                     current_unc.append(np.float64(split_l[length-1]))
-
-                    #if p == 253:
-                        #total.append(split_l[len(split_l)-2])
-                        #total_unc.append(split_l[len(split_l)-1])
                     p = p + 1
                    
                 total = current_vals.pop(252) #extracting last value ('total flux')
                 total_unc = current_unc.pop(252)
-        #bins.pop(239)
             i = i + 1
         return current_vals, current_unc
                         
@@ -133,7 +127,6 @@ class mcnp_file_handler():
     np.set_printoptions(precision=None, suppress=None)
 
     def propagate_uncertainty(self, derivative, uncertainty):
-        #print(derivative)
         uncertainty = np.square(uncertainty)
         unc = np.diag(uncertainty[0])
         t_derivative = np.transpose(derivative)
@@ -193,10 +186,9 @@ class mcnp_file_handler():
         ddenomenator3_dflux2 = np.dot(denomenator2,(ddenomenator1_dflux2))+np.dot(denomenator1,ddenomenator2_dflux2)
         denomenator4 = np.sqrt(denomenator3)
         variable0 = 1/np.dot(2,np.sqrt(denomenator3))
-        #variable0[np.isinf(variable0)] = 0
         ddenomenator4_flux1 = np.dot(variable0,ddenomenator3_dflux1)
         ddenomenator4_flux2 = np.dot(variable0,ddenomenator3_dflux2)
-        #print(numerator, denomenator4, R)
+        
         R = numerator/denomenator4
         dR_dflux1 = np.dot(1/(denomenator4),dnumerator_dflux1)-np.dot(numerator/denomenator4**2,ddenomenator4_flux1)
         dR_dflux2 = np.dot(1/(denomenator4),dnumerator_dflux2)-np.dot(numerator/denomenator4**2,ddenomenator4_flux2)
@@ -208,7 +200,6 @@ class mcnp_file_handler():
         derivative  = np.reshape(derivative0,(1,504))
 
         R_unc = self.propagate_uncertainty(derivative, uncertainty)   
-        #print(R)
         R[np.isnan(R)] = 0
         R_unc[np.isnan(R_unc)] = 0
         print(R, R_unc)
